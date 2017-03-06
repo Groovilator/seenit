@@ -34,6 +34,13 @@ class Post(object):
 		    'date_utc': self.date_utc
 		}
 
+def add_popularity(posts, maxUps, minUps, maxComs, minComs):
+	for i in xrange(len(posts)):
+		upNorm = float(posts[i]['Up Votes'] - minUps)/float(maxUps - minUps)
+		comNorm = float(posts[i]['Comment Count'] - minComs)/float(maxComs-minComs)
+		posts[i]['Popularity Rating'] = upNorm + comNorm
+	return posts
+
 @app.route('/topimages')
 def top_images():
 	period = request.args.get('period')
@@ -47,6 +54,10 @@ def top_images():
                      password=PASSWORD)
 
 	images = []
+	minUps = 0
+	maxUps = 0
+	minComs = 0
+	maxComs = -1
 	regexp = re.compile(r'.*\.(jpg|jpeg|png|gif|gifv)$')
 	for post in reddit.subreddit("all").top(period):
 		if (regexp.search(post.url.encode('utf-8')) or "imgur.com" in post.url.encode('utf-8')):
@@ -59,8 +70,18 @@ def top_images():
 					post.ups, 
 					post.num_comments,
 					post.created_utc))
+			if post.ups > maxUps:
+				maxUps = post.ups
+			if post.ups < minUps or minUps == 0:
+				minUps = post.ups
+			if post.num_comments > maxComs:
+				maxComs = post.num_comments
+			if post.num_comments < minComs or minComs == -1:
+				minComs = post.num_comments
 
-	return jsonify([image.serialize() for image in images])
+	serialized_posts = [image.serialize() for image in images]
+	return jsonify(add_popularity(
+		serialized_posts, maxUps, minUps, maxComs, minComs))
 
 if __name__ == '__main__':
     app.run()
