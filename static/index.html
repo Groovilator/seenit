@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>seenit</title>
+	<style>
+      html, body {
+      	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+</head>
+<body>
+	<div style="text-align: center;">
+		<h1>seenit</h1>
+		<h3>Select a time period for top/popular images:</h3>
+		<select id="period">
+			<option value="hour">Current Hour</option>
+			<option value="day" selected="selected">Current Day</option>
+			<option value="week">Current Week</option>
+			<option value="month">Current Month</option>
+			<option value="year">Current Year</option>
+			<option value="all">All</option>
+		</select>
+		<button type="button" id="query">Get Images</button>
+	</div>
+	<br>
+	<div id="topResults"></div>
+</body>
+</html>

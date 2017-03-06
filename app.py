@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 import praw
 import re
 
@@ -40,6 +40,10 @@ def add_popularity(posts, maxUps, minUps, maxComs, minComs):
 		comNorm = float(posts[i]['Comment Count'] - minComs)/float(maxComs-minComs)
 		posts[i]['Popularity Rating'] = upNorm + comNorm
 	return posts
+
+@app.route('/')
+def index():
+    return send_from_directory('static', "index.html")
 
 @app.route('/topimages')
 def top_images():
