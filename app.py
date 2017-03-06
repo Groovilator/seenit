@@ -1,6 +1,8 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import praw
 import re
+
+VALID_PERIODS = ["all", "day", "hour", "month", "week", "year"]
 
 USER_AGENT = "seenit v0.1"
 
@@ -34,6 +36,10 @@ class Post(object):
 
 @app.route('/topimages')
 def top_images():
+	period = request.args.get('period')
+	if period not in VALID_PERIODS:
+		period = "day"
+
 	reddit = praw.Reddit(client_id=CLIENT_ID,
                      client_secret=CLIENT_SECRET,
                      user_agent=USER_AGENT,
@@ -42,8 +48,8 @@ def top_images():
 
 	images = []
 	regexp = re.compile(r'.*\.(jpg|jpeg|png|gif|gifv)$')
-	for post in reddit.subreddit("all").top("all"):
-		if (regexp.search(str(post.url)) or "imgur.com" in str(post.url)):
+	for post in reddit.subreddit("all").top(period):
+		if (regexp.search(post.url.encode('utf-8')) or "imgur.com" in post.url.encode('utf-8')):
 			images.append(
 				Post(
 					post.title,
