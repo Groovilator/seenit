@@ -83,5 +83,41 @@ def top_images():
 	return jsonify(add_popularity(
 		serialized_posts, maxUps, minUps, maxComs, minComs))
 
+@app.route('/hotimages')
+def hot_images():
+	reddit = praw.Reddit(client_id=CLIENT_ID,
+                     client_secret=CLIENT_SECRET,
+                     user_agent=USER_AGENT,
+                     username=USERNAME,
+                     password=PASSWORD)
+
+	images = set()
+	regexp = re.compile(r'.*\.(jpg|jpeg|png|gif|gifv)$')
+	for post in reddit.subreddit("all").hot():
+		if (regexp.search(post.url.encode('utf-8')) or "imgur.com" in post.url.encode('utf-8')):
+			images.add(
+				Post(
+					post.title,
+					post.url, 
+					post.thumbnail,
+					post.subreddit.display_name,
+					post.ups, 
+					post.num_comments,
+					post.created_utc))
+
+	for post in reddit.subreddit("all").rising():
+		if (regexp.search(post.url.encode('utf-8')) or "imgur.com" in post.url.encode('utf-8')):
+			images.add(
+				Post(
+					post.title,
+					post.url, 
+					post.thumbnail,
+					post.subreddit.display_name,
+					post.ups, 
+					post.num_comments,
+					post.created_utc))
+
+	return jsonify([image.serialize() for image in images])
+
 if __name__ == '__main__':
     app.run()
