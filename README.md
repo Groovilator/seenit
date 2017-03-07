@@ -21,7 +21,7 @@ an invalid period is provide the service defaults the period to "day".
 Valid time periods: "all", "day", "hour", "month", "week", "year"
 
 Ex. http://localhost:5000/topimages  
-    http://localhost:5000/topimages?period=week  
+http://localhost:5000/topimages?period=week  
 
    Response JSON Structure:
    
@@ -63,10 +63,11 @@ hot and rising sections of the "all" subreddit.
 ## Build/Run
 Before running the application, the Reddit API "script" credentials must be 
 added to the placeholders in `app.py`:  
-`CLIENT_ID = "***REPLACE ME***"  
-CLIENT_SECRET = "***REPLACE ME***"  
-USERNAME = "***REPLACE ME***"  
-PASSWORD = "***REPLACE ME***"`  
+
+CLIENT_ID = "\***REPLACE ME\***"  
+CLIENT_SECRET = "\***REPLACE ME\***"  
+USERNAME = "\***REPLACE ME\***"  
+PASSWORD = "\***REPLACE ME\***"  
 
 To install python dependencies run
 `pip install -r requirements.txt`
