@@ -1,10 +1,5 @@
 # seenit
 
-Simple http server that accepts connections over port 8080 and provides a 
-sha512 hash if a "password" parameter is provided. Additionally, a graceful
-shutdown endpoint is exposed that stops the http server, refuses any 
-subsequent requests, and exits.
-
 Simple Flask app that provides endpoints to identify image posts on the Reddit 
 frontpage (r/all).
 
@@ -25,8 +20,8 @@ time period from which to get the top image posts. If no period is provided or
 an invalid period is provide the service defaults the period to "day". 
 Valid time periods: "all", "day", "hour", "month", "week", "year"
 
-   Ex. http://localhost:8080/topimages
-   	   http://localhost:8080/topimages?period=week
+   Ex. http://localhost:5000/topimages  
+   	   http://localhost:5000/topimages?period=week  
 
    Response JSON Structure:
    
@@ -47,7 +42,7 @@ Valid time periods: "all", "day", "hour", "month", "week", "year"
 **"/hotimages"** - Endpoint for requesting image posts that are present on the
 hot and rising sections of the "all" subreddit. 
    
-   Ex. http://localhost:8080/hotimages
+   Ex. http://localhost:5000/hotimages
 
    Response JSON Structure:
 
@@ -66,6 +61,13 @@ hot and rising sections of the "all" subreddit.
 
               
 ## Build/Run
+Before running the application, the Reddit API "script" credentials must be 
+added to the placeholders in `app.py`:
+`CLIENT_ID = "***REPLACE ME***"
+CLIENT_SECRET = "***REPLACE ME***"
+USERNAME = "***REPLACE ME***"
+PASSWORD = "***REPLACE ME***"`
+
 To install python dependencies run
 `pip install -r requirements.txt`
 in the source directory.
