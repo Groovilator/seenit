@@ -38,6 +38,13 @@ $("#pop").click(function(event){
     generateTable(reddit_posts);
 });
 
+$(document).ready(function(event) {
+    $.getJSON('/hotimages',
+    function (data) {
+      generateChart(data);
+    });
+});
+
 function generateTable(posts) {
     console.log("generateTable");
     var col = ['Thumbnail', 'Title', 'Subreddit', 'Up Votes', 'Comment Count', 'Popularity Rating'];
@@ -70,9 +77,60 @@ function generateTable(posts) {
             }
         }
     }
-    alert(posts.length);
 
     var divContainer = document.getElementById("topResults");
     divContainer.innerHTML = "";
     divContainer.appendChild(table);
+}
+
+function generateChart(posts) {
+    posts = sortByKey(posts, 'Up Votes');
+    var sub_counts = {}
+    for (var i = 0; i < posts.length && i < 50; i++) { 
+        if (!(posts[i]["Subreddit"] in sub_counts)) {
+            sub_counts[posts[i]["Subreddit"]] = 1;
+        }
+        else {
+            sub_counts[posts[i]["Subreddit"]]++;
+        }
+    }
+    var dp = [];
+    Object.keys(sub_counts).forEach(function(key) {
+        dp.push({
+            x: 0,
+            y: sub_counts[key],
+            name: key
+        });;
+    });
+    dp = sortByKey(dp, 'y');
+
+    var chart = new CanvasJS.Chart("chartContainer",
+    {
+      title:{
+      text: "Distribution of Subreddits contributing images to Hot/Rising"
+      },
+
+      axisY: {
+        gridThickness:0,
+        lineThickness:0,
+        tickThickness:0,
+        valueFormatString:" "
+      },
+      axisX: {
+        gridThickness:0,
+        lineThickness:0,
+        tickThickness:0,
+        valueFormatString:" "
+      },
+
+      data: [
+      {
+        type: "stackedBar100",
+        toolTipContent: "{name}: <strong>{y}</strong>",
+        dataPoints: dp
+      }
+      ]
+    });
+
+    chart.render();
 }
